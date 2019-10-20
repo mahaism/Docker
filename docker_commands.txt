@@ -1,0 +1,112 @@
+tarting up with Docker containerization
+
+1. Searching for CentOS image with the most stars:
+
+docker search --filter=stars=100 centos
+2. You can also pull an image:
+
+docker pull centos
+3. To view the images, simply do this:
+
+docker images
+4. You can also run the container/images
+
+docker run  -it --name=centostunnelix centos /bin/bash
+5. When you run containers and even after exiting, you cannot re-run it again, because that container name, in my case centostunnelix, was used previously. Note that the container has been stopped and not removed! You will find it stopped using the following command:
+
+docker ps -a
+6. You can now start the container back:
+
+docker start centostunnelix
+7. And after starting it, you can simply stop the container:
+
+docker stop centostunnelix
+8. You can also gracefully remove it:
+
+docker rm centostunnelix
+9. Also renamed it to another instance, for example, centosprod in this case:
+
+docker rename centostunnelix centosprod
+10. A Docker in exited mode means that the changes you made are still there. However, it is still not running. You can now run it either by connecting directly to it or simply run it in the background and attach to it whilst it is running.
+
+docker start centosprod
+docker attach centosprod
+Warming up with Docker...
+
+11. Moreover, if you need to detach from the container without stopping it, you simply need to do the following two key combination one after each other. It is a good practice to check it using docker ps -a though:
+
+Ctrl+p and Ctrl+q
+12. But this keys combination can be painful and as a good practice after starting a Docker container, use the following command to get into the container and by typing Ctrl+d or exit to keep your container still up and running:
+
+docker exec -it centosprod /bin/bash 
+13. To get the last container that you have run using the following command:
+
+docker ps -l
+14. To see all the commands that have been executed inside a container with its timestamp, use the following command:
+
+docker logs centosprod -t
+15. You can also pause and unpause containers which are actually freezing and unfreezing it using the following commands:
+
+docker pause centosprod
+docker unpause centosprod
+16. Imagine you want to run a container, but as soon as you exit from the container, it should get destroyed immediately. For that to be done, you need to start the container with the following command:
+
+docker run --rm --it centosprod /bin/bash
+Docker Hub
+
+17. The Docker Hub is a library and community for Docker container images. You can access it at hub.docker.com and created an account to it. Then, from your Terminal, use the following command to log in to the Docker Hub.
+
+docker login
+18. As explained in part 3, to see the list of images created, you can use docker images. Note that image ID is the same. However, to push an image to your repository, firstly, you need to give a tag to the image using the following command:
+
+docker image tag centos thetunnelix/centostunnelix
+19. By now, if you launch again the command docker images, you will see the same images under a new name tag. To upload it to your repository using the following command:
+
+docker image push thetunnelix/centostunnelix
+20. You can also delete an image locally using the following command:
+
+docker image rm -f centostunnelix
+21. To retrieve back your image use the following command:
+
+docker pull thetunnelix/centostunnelix
+Let's dive into Networking
+
+22. Once into the Docker container, the command ipconfig is not present. I have installed the package net-tools using the command yum install net-tools -y. After installing the package, after firing an ipconfig, you would notice that the network card has been assigned with an IP address. On your physical machine, launch the following command to see your connection names, UUID, Type and Devices. You will see a connection name docker0 as a bridge:
+
+nmcli connection show
+23. To see how many virtual connected devices to docker0, you can use the following command:
+
+brctl show docker0
+24. Since Docker, create a virtual bridge on the machine, you can also see it using the following command:
+
+docker network ls
+25. To get more details about the network configuration of each container use the following:
+
+docker network inspect bridge
+26. So, we have seen by default docker create a bridge and all containers are assigned IP from that bridge only. However, we can also create another bridge and also specifying the gateway as well as the subnet which is pretty interesting:
+
+docker network create tunnel0 --subnet 10.0.0.0/24 --gateway 10.0.0.1
+27. Once you have created a new network bridge, you can use again the command docker network ls and docker network inspect bridge to confirm if the bridge has been created. Now, to start a container in the subnet 10.0.0.0/24, simply use the following command that was used in step 4 but this time with the argument --net <name of virtual bridge>:
+
+docker run -it --net tunnel0 --name=centosprodnew centos /bin/bash
+28. In step 27, we have seen how to create a container for a particular network. Imagine that you want to attach the same container to "bridge" that has been created by default. You would notice it using the command docker network ls. To connect it to "bridge", use the following command.
+
+docker network connect bridge centosprodnew
+29. To disconnect it from "bridge", simply do the following:
+
+docker network disconnect bridge centosprodnew
+30. To get logs at host level launch the following command:
+
+journalctl -u docker.service
+Tips:
+
+You can run directly an image, for example, docker run fedora even if you did not pull it. Docker will automatically pull it and run it for you.
+Every time you run a container with a different container name, it will assign a unique ID to it under the directory /var/lib/docker/containers. For every container, you have a unique ID and docker ps -aq will show you the containers.
+When a name is not specified when starting a Docker container, Docker will assign names to it; it could be a really funny name.
+Imagine that you are exiting from a container and you want the container to be removed automatically.
+Always remember, whenever you start a Docker container, a unique ID will be allocated to the container and a filesystem will be allocated and mounts as Read/Write for the container. It will also allocate a Network/Bridge interface following an IP assignment and finally the process execution by the user.
+By default, all Docker containers will be assigned an IP address range from docker0.
+You can also create a container by using the argument --hostname and by default docker will append the /etc/hosts file with the IP and hostname of the container.
+Virtual network binds to the bridge which creates a virtual subnet shared between the host and every virtual container. It's basically a NAT rule that allows containers to talk to the internet but not the other way around. This concept is similar to the option of NAT in Virtual Box.
+In step 28, "bridge" is the name of the virtual bridge that has been created by default in Docker.
+If you liked these Docker basics and have any question please comment below. In future articles, I will focus on building Docker images and publish ports, Docker Swarm, Kubernetes with Docker, Metrics, and Monitoring of Docker containers etc.
