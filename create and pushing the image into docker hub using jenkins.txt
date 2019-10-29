@@ -1,0 +1,29 @@
+1.pull source code from github.
+2.Write dockerfile for deploy web application.                                                   
+3.Build docker image.
+4.push to dockerhub
+
+ using cloudbees build and publish plugin.
+ 
+Write a pipeline script in jenkins for bellow stages. (cloudbees docker build and pubish plugin)
+1.pull source code from github.
+2.Write dockerfile for deploy web application.
+3.Build docker image.
+4.Test the Docker image.
+5.push to dockerhub. 
+
+and finally
+
+6.pull the image another vm
+7.Deploy the docker container from other vm and access the application.
+
+and
+
+How should we write the dockerfile effectively and their constraints.
+
+what is difference between ubuntu base image and aplhine base image.
+
+
+git repo for source code for this project:
+===========================================
+https://github.com/ybmadhu/web_login_automation.git

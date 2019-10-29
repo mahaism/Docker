@@ -1,0 +1,19 @@
+Jenkins on Docker step by step guide
+======================================================
+==> How to start a jenkins image
+	Login to the docke hub and search for jenkins image
+	Execute $ "docker pull jenkins" commad, the jenkins ll be download.
+==> Start yje jenkins container
+	$ docker run <jenkins/jenkins id>
+	$ docker run -p 8080:8080 -p 50000:50000 jenkins
+	-p : expose the port number    
+	8080:8080 --> 	the port 8080 on the host system which is
+ 	coruspond to 8080 port for the docker server
+similarly we are exporting 50000 which is for jenkins api.
+==> docker run -p 8080:8080 -p 50000:50000 -v /you/home:/var/jenkins_home jenkins
+ex: docker run --name myjenkins1 -p 8080:8080 -p 50000:50000 -v /opt/jenkins_HOME:/var/jenkins_home jenkins
+==> How to set volume?
+	$ docker volume create 
+	$ docker volume ls
+	$ docker volume inspect <volume_name>
+==> 

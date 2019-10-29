@@ -1,0 +1,57 @@
+--> Docker installation on RHEL/CENTOS
+  * Adding official docker repo on linux/centos
+    # yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+  * Installing Docker CS Engine.
+    # yum install doker-ce -y
+  * Configure the Docker deamon to start automatically in case if it is not started automatically after the installation
+    # systemctl enable docker.service
+    # systemctl start docker.service
+ ===============================================================================================================================
+
+--> Install DOcker CE on UBUNTU 16.04 LTS
+  * Add the GPG Key for the Docker repository:
+    # curl --fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add-
+  * Add the official Docker repository:
+    # add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs)stable"
+  * Update the apt database and install Docker Engine:
+    # apt-get update; apt-get -y install docker-ce
+  * Configure the Docker deamon to start automatically in case if it is not started automatically after the installation
+    # systemctl enable deocker.service
+    # systemctl start docker.service
+=================================================================================================================================
+
+--> Docker commands
+    # docker images: Shows all images
+    # docker build: Builds an image form a Dockerfile
+    # docker commit: Creates a new image from a container's change, pushing it teperarily if it is running.
+    # docker rmi: Removes one or more images.
+    # docker history: shows the history of an image
+    # docker tag: Tags an image into repository
+    # docker import: Imports the contents from a tarball to create a filesystem image.
+    # docker export: Exports a container's filesystem as a tar achieve.
+    # docker search: Search the Docker hub fo image.
+    
+=================================================================================================================================
+--> Executing docker commands:
+    Run a Drupal container. 
+    # docker run -dit --name drupal_container -p 8080:80 drupal
+    # docker ps: to ckeck running containers
+    # docker search mysql : search mysql from public repo
+    # docker pull mysql: pull the image from public repo.
+    # docker exec -it containe_name /bin/bash
+
+=================================================================================================================================
+
+--> sample Docker file:
+  
+  FROM ubuntu:updated
+  RUN apt-get install apache2 -y
+  RUN apt-get install apache2-utils -y
+  EXPOSE 80
+  ENTRYPOINT ["apache2ctl"]
+  CMD ["-DFOREGROUND"]    
+
+# docker build -t webserver:latest .
+
+
+   

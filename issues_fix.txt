@@ -1,0 +1,4 @@
+https://stackoverflow.com/questions/48957195/how-to-fix-docker-got-permission-denied-issue
+
+Sol: Exucute below command
+sudo chmod 666 /var/run/docker.sock
